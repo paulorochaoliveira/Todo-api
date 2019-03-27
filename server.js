@@ -14,16 +14,26 @@ app.get('/', function (req, res) {
     res.send('Todo API root');
 });
 
-// GET /todos?completed=true
+// GET /todos?completed=true&q=work
 app.get('/todos', function (req, res) {
     var queryParams = req.query;
     var filterTodos = todos;
+    var filterCompleted = [];
     
     if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'true') {
         filterTodos = _.where(filterTodos, {completed: true});
     } else if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'false') {
         filterTodos = _.where(filterTodos, {completed: false});
     }
+    
+    if (queryParams.hasOwnProperty('q') && queryParams.q.length > 0){
+        filterTodos = _.filter(filterTodos, function(todo){ 
+            return todo.description.toLowerCase().indexOf(queryParams.q.toLowerCase()) > -1; 
+        });
+    }
+    if (filterTodos.length === 0) {
+        return res.status(404).send();
+    } 
     res.json(filterTodos);
 });
 
