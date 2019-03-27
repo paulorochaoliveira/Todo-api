@@ -29,6 +29,8 @@ app.get('/todos/:id', function (req, res) {
 //        }
 //    });
 //    res.send(typeof todoItem)
+    
+    
     if (todoItem){
         res.json(todoItem);
     } else {
@@ -38,7 +40,14 @@ app.get('/todos/:id', function (req, res) {
 
 //POST /todos
 app.post('/todos', function (req, res) {
-    var body = req.body;
+    var body = _.pick(req.body, 'description', 'completed');
+    
+    if (!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0) {
+        return res.status(400).send();
+    }
+    
+    body.description = body.description.trim();
+    
     body.id = todoNext++;
     
     todos.push(body);
