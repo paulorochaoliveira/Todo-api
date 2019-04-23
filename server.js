@@ -37,7 +37,7 @@ app.get('/todos', function (req, res) {
             res.json(todos);
     }, function(e) {
         res.status(500).json(e);
-    })
+    });
 
     // var filterTodos = todos;
     // var filterCompleted = [];
